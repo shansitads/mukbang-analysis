@@ -1,5 +1,11 @@
 import pandas as pd
 
+from googletrans import Translator, constants
+from pprint import pprint
+
+# init the Google API translator
+translator = Translator()
+
 def get_channel_stats(youtube, channel_ids):
     all_data = []
     
@@ -11,10 +17,10 @@ def get_channel_stats(youtube, channel_ids):
     
     # loop throught items
     for item in response['items']:
-        data = {'channelName':item['snippet']['title'],
+        data = {'channelName':translator.translate(item['snippet']['title'], dest="en").text,
         'subscribers':item['statistics']['subscriberCount'],
         'views':item['statistics']['viewCount'],
-        'totalViews':item['statistics']['videoCount'],
+        'totalVideos':item['statistics']['videoCount'],
         'playlistId': item['contentDetails']['relatedPlaylists']['uploads']
         }
         all_data.append(data)
@@ -62,10 +68,9 @@ def get_video_details(youtube, video_ids):
 
         for video in response['items']:
             stats_to_keep = {'snippet' : ['channelTitle', 'title', 'description', 'tags', 'publishedAt'],
-                            'statistics' : ['viewCount', 'likeCount', 'favouritecounut', 'commentCount'],
+                            'statistics' : ['viewCount', 'likeCount', 'favouritecount', 'commentCount'],
                             'contentDetails': ['duration', 'definition', 'caption']
                             }
-
             video_info = {}
             video_info['video_id'] = video['id']
 
